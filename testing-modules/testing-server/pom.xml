@@ -4,13 +4,21 @@
         <version>0.0.1-SNAPSHOT</version>
         <groupId>org.digitalcrafting</groupId>
         <artifactId>orodruin</artifactId>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>anvil-server</artifactId>
+    <artifactId>testing-server</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
+        <!-- Internal -->
+        <dependency>
+            <groupId>org.digitalcrafting</groupId>
+            <artifactId>anvil-server</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <!-- External -->
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>javax.activation-api</artifactId>
@@ -86,4 +94,33 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>
+                                        org.digitalcrafting.testing.server.TestingServerApplication
+                                    </mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

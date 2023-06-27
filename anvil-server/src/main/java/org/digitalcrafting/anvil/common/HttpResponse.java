@@ -35,7 +35,7 @@ public class HttpResponse implements HttpMessage {
         this.version = "HTTP/1.1";
     }
 
-    public String getBodyAsString() throws IOException {
+    private String getBodyAsString() throws IOException {
         StringBuffer buf = new StringBuffer();
         InputStream in = getBody();
         int c;
@@ -45,7 +45,7 @@ public class HttpResponse implements HttpMessage {
         return buf.toString();
     }
 
-    public InputStream getBody() throws IOException {
+    private InputStream getBody() throws IOException {
         return new HttpInputStream(in, headers);
     }
 
@@ -86,6 +86,8 @@ public class HttpResponse implements HttpMessage {
             }
 
             System.out.println(headers.toString());
+
+            this.body = this.getBodyAsString();
 
             return true;
         } catch (Exception e) {

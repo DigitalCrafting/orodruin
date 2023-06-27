@@ -8,6 +8,8 @@
 
     <modules>
         <module>anvil-server</module>
+        <module>testing-modules/testing-client</module>
+        <module>testing-modules/testing-server</module>
     </modules>
 
     <properties>

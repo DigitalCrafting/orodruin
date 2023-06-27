@@ -1,21 +1,20 @@
-package org.digitalcrafting.anvil.client;
+package org.digitalcrafting.testing.client;
 
+import org.digitalcrafting.anvil.client.BasicHttpClient;
 import org.digitalcrafting.anvil.common.HttpRequest;
 import org.digitalcrafting.anvil.common.HttpResponse;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.Socket;
 
-public class HttpClient {
+public class TestingClientApplication {
     public static void main(String[] args) {
         System.out.println("Welcome to HTTP Client");
-        try (Socket client = new Socket("127.0.0.1", 8080);
-             OutputStream out = client.getOutputStream();
-             BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))
-        ) {
+
+        try (
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        ) {
+            BasicHttpClient client = new BasicHttpClient("127.0.0.1", 8080);
             String input = "";
 
             System.out.println("Web client started");
@@ -25,26 +24,19 @@ public class HttpClient {
             while (true) {
                 System.out.print("> ");
                 input = bufferedReader.readLine();
-                HttpRequest request = new HttpRequest("POST", "/api/", out);
+                HttpRequest request = new HttpRequest("POST", "/api/");
                 request.body = input;
 
-                request.send("close".equals(input));
+                HttpResponse response = client.exchange(request);
 
-                HttpResponse response = new HttpResponse(in);
+                System.out.println("Response from server: " + response.body);
 
-                if (!response.parse()) {
-                    System.out.println("Try again");
-                    return;
-                }
-
-                System.out.println("Response from server: " + response.getBodyAsString());
-
-                if ("close".equalsIgnoreCase(response.headers.get("Connection"))) {
+                if ("close".equalsIgnoreCase(input)) {
                     break;
                 }
             }
         } catch (Exception e) {
-            System.out.println("Something went wrong " + e);
+            System.out.println("Buffered reader failed " + e);
         } finally {
             System.out.println("Goodbye!");
         }

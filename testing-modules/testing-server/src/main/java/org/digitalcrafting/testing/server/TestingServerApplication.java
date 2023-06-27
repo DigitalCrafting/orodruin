@@ -1,10 +1,10 @@
-package org.digitalcrafting.anvil;
+package org.digitalcrafting.testing.server;
 
 import org.digitalcrafting.anvil.server.BasicHttpServer;
 
 import java.io.IOException;
 
-public class HttpApplication {
+public class TestingServerApplication {
     public static void main(String[] args) {
         new BasicHttpServer(8080)
                 .addHandler("GET", "/api/", (request, response) -> response.body = "Called GET method on path '/api/'")

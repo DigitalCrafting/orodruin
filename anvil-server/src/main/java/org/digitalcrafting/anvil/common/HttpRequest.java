@@ -18,8 +18,8 @@ public class HttpRequest implements HttpMessage {
     public Map<String, String> headers = new HashMap<>();
     public Map<String, String> queryParams = new HashMap<>();
 
-    private BufferedReader in;
-    private OutputStream out;
+    public BufferedReader in;
+    public OutputStream out;
 
     public HttpRequest(BufferedReader in) {
         this.in = in;
@@ -122,6 +122,11 @@ public class HttpRequest implements HttpMessage {
         }
 
         return false;
+    }
+
+    public void send(OutputStream out) throws IOException {
+        this.out = out;
+        this.send(true);
     }
 
     public void send(boolean closeConnection) throws IOException {
