@@ -13,9 +13,9 @@ import java.util.Map;
 
 public class HttpSocketHandler implements Runnable {
     private Socket socket;
-    private Map<String, Map<String, HttpPathHandler>> pathsMap;
+    private final Map<String, HttpPathHandler> pathsMap;
 
-    public HttpSocketHandler(Socket aSocket, Map<String, Map<String, HttpPathHandler>> aPathsMap) {
+    public HttpSocketHandler(Socket aSocket, Map<String, HttpPathHandler> aPathsMap) {
         this.socket = aSocket;
         this.pathsMap = aPathsMap;
     }
@@ -51,22 +51,12 @@ public class HttpSocketHandler implements Runnable {
                 HttpResponse response;
                 System.out.println("Received " + request.method + " request to path " + request.path);
 
-                if (pathsMap.containsKey(request.method)) {
-                    Map<String, HttpPathHandler> getHandlers = pathsMap.get(request.method);
-                    if (getHandlers.containsKey(request.path)) {
-                        response = new HttpResponse(200, "OK", out);
-                        if ("GET".equals(request.method)) {
-                            getHandlers.get(request.path).handle(request, response);
-                        } else if ("POST".equals(request.method)) {
-                            getHandlers.get(request.path).handle(request, response);
-                        }
-                    } else {
-                        response = new HttpResponse(404, "NOT FOUND", out);
-                    }
+                if (pathsMap.containsKey(request.path)) {
+                    response = new HttpResponse(200, "OK", out);
+                    pathsMap.get(request.path).handle(request, response);
                 } else {
                     response = new HttpResponse(404, "NOT FOUND", out);
                 }
-
                 response.send(done);
             }
         } catch (IOException e) {

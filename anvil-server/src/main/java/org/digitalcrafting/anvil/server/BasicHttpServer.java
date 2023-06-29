@@ -9,15 +9,14 @@ import java.util.Map;
 public class BasicHttpServer {
     private ServerSocket serverSocket;
     private final int port;
-    private final Map<String, Map<String, HttpPathHandler>> handlersMap = new HashMap<>();
+    private final Map<String, HttpPathHandler> handlersMap = new HashMap<>();
 
     public BasicHttpServer(int port) {
         this.port = port;
     }
 
-    public BasicHttpServer addHandler(String method, String path, HttpPathHandler handler) {
-        handlersMap.putIfAbsent(method, new HashMap<>());
-        handlersMap.get(method).put(path, handler);
+    public BasicHttpServer addHandler(String path, HttpPathHandler handler) {
+        handlersMap.put(path, handler);
         return this;
     }
 
