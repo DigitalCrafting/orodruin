@@ -3,13 +3,17 @@ package org.digitalcrafting.testing.client;
 import org.digitalcrafting.anvil.client.BasicHttpClient;
 import org.digitalcrafting.anvil.common.HttpRequest;
 import org.digitalcrafting.anvil.common.HttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public class TestingClientApplication {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestingClientApplication.class);
+
     public static void main(String[] args) {
-        System.out.println("Welcome to HTTP Client");
+        LOGGER.info("Welcome to HTTP Client");
 
         try (
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -17,9 +21,9 @@ public class TestingClientApplication {
             BasicHttpClient client = new BasicHttpClient("127.0.0.1", 8080);
             String input = "";
 
-            System.out.println("Web client started");
-            System.out.println("Connected to server at 127.0.0.1:8080");
-            System.out.println("What message do you want to send?");
+            LOGGER.info("Web client started");
+            LOGGER.info("Connected to server at 127.0.0.1:8080");
+            LOGGER.info("What message do you want to send?");
 
             while (true) {
                 System.out.print("> ");
@@ -29,16 +33,16 @@ public class TestingClientApplication {
 
                 HttpResponse response = client.exchange(request);
 
-                System.out.println("Response from server: " + response.body);
+                LOGGER.info("Response from server: " + response.body);
 
                 if ("close".equalsIgnoreCase(input)) {
                     break;
                 }
             }
         } catch (Exception e) {
-            System.out.println("Buffered reader failed " + e);
+            LOGGER.error("Buffered reader failed " + e);
         } finally {
-            System.out.println("Goodbye!");
+            LOGGER.info("Goodbye!");
         }
     }
 }

@@ -1,5 +1,9 @@
 package org.digitalcrafting.anvil.server;
 
+import org.digitalcrafting.anvil.common.PropertiesReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -7,9 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BasicHttpServer {
-    private ServerSocket serverSocket;
+    private static final Logger LOGGER = LoggerFactory.getLogger(BasicHttpServer.class);
     private final int port;
     private final Map<String, HttpPathHandler> handlersMap = new HashMap<>();
+    private ServerSocket serverSocket;
+
+    public BasicHttpServer() {
+        this.port = Integer.parseInt(PropertiesReader.get("server.port"));
+    }
 
     public BasicHttpServer(int port) {
         this.port = port;
@@ -21,8 +30,6 @@ public class BasicHttpServer {
     }
 
     public void start() {
-        System.out.println("Web server started");
-
         try {
             startup();
             Socket clientSocket;
@@ -32,16 +39,16 @@ public class BasicHttpServer {
                 t.start();
             }
         } catch (IOException e) {
-            System.out.println("Error occurred: " + e);
+            LOGGER.error("Error occurred: " + e);
         } finally {
-            System.out.println("Server shutdown...");
+            LOGGER.info("Server shutdown...");
             shutdown();
         }
     }
 
     private void startup() throws IOException {
         serverSocket = new ServerSocket(port);
-        System.out.println("Server has started");
+        LOGGER.info("Server has started on port {}", port);
     }
 
     private void shutdown() {
@@ -50,8 +57,8 @@ public class BasicHttpServer {
                 serverSocket.close();
             }
         } catch (IOException e) {
-            System.out.println("Couldn't close the server socket.");
-            System.out.println("Exiting program.");
+            LOGGER.error("Couldn't close the server socket.");
+            LOGGER.error("Exiting program.");
         }
     }
 }

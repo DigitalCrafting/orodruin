@@ -1,6 +1,8 @@
 package org.digitalcrafting.anvil.common;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +13,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 public class HttpResponse implements HttpMessage {
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpResponse.class);
+
     public int statusCode;
     public String message;
     public String version;
@@ -85,13 +89,13 @@ public class HttpResponse implements HttpMessage {
                 headers.put(nameValuePair[0], nameValuePair[1].strip());
             }
 
-            System.out.println(headers.toString());
+            LOGGER.info(headers.toString());
 
             this.body = this.getBodyAsString();
 
             return true;
         } catch (Exception e) {
-            System.out.println("Could not parse response.");
+            LOGGER.error("Could not parse response.");
         }
 
         return false;

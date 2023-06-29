@@ -2,6 +2,8 @@ package org.digitalcrafting.anvil.client;
 
 import org.digitalcrafting.anvil.common.HttpRequest;
 import org.digitalcrafting.anvil.common.HttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -9,6 +11,8 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 public class BasicHttpClient {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BasicHttpClient.class);
+
     private final String address;
     private final int port;
 
@@ -32,9 +36,9 @@ public class BasicHttpClient {
                 throw new RuntimeException("Could not parse the response");
             }
         } catch (Exception e) {
-            System.out.println("Something went wrong " + e);
+            LOGGER.error("Something went wrong " + e);
         } finally {
-            System.out.println("Goodbye!");
+            LOGGER.info("Goodbye!");
         }
 
         return response;

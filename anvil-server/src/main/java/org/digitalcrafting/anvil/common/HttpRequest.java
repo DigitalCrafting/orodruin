@@ -1,6 +1,8 @@
 package org.digitalcrafting.anvil.common;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest implements HttpMessage {
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpRequest.class);
+
     public String method;
     public String path;
     public String fullUrl;
@@ -74,6 +78,9 @@ public class HttpRequest implements HttpMessage {
     public boolean parse() {
         try {
             String initialLine = in.readLine();
+            if (initialLine == null) {
+                return false;
+            }
 
             // We expect first line to consist of 3 token: METHOD, URL, HTTP_VERSION
             String[] components = initialLine.split(" ");
@@ -113,15 +120,21 @@ public class HttpRequest implements HttpMessage {
                 headers.put(nameValuePair[0].strip(), nameValuePair[1].strip());
             }
 
-            System.out.println(headers.toString());
+            LOGGER.info(headers.toString());
 
+            this.body = getBodyAsString();
 
             return true;
         } catch (Exception e) {
-            System.out.println("Could not parse request.");
+            LOGGER.error("Could not parse request");
         }
 
         return false;
+    }
+
+    public void send(OutputStream out, boolean closeConnection) throws IOException {
+        this.out = out;
+        this.send(closeConnection);
     }
 
     public void send(OutputStream out) throws IOException {

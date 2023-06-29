@@ -2,6 +2,8 @@ package org.digitalcrafting.anvil.server;
 
 import org.digitalcrafting.anvil.common.HttpRequest;
 import org.digitalcrafting.anvil.common.HttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,8 +14,9 @@ import java.net.SocketTimeoutException;
 import java.util.Map;
 
 public class HttpSocketHandler implements Runnable {
-    private Socket socket;
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpSocketHandler.class);
     private final Map<String, HttpPathHandler> pathsMap;
+    private Socket socket;
 
     public HttpSocketHandler(Socket aSocket, Map<String, HttpPathHandler> aPathsMap) {
         this.socket = aSocket;
@@ -30,7 +33,7 @@ public class HttpSocketHandler implements Runnable {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = socket.getOutputStream();
 
-            System.out.println("Received connection from " + socket.getRemoteSocketAddress().toString());
+            LOGGER.info("Received connection from " + socket.getRemoteSocketAddress().toString());
             while (!done) {
                 HttpRequest request = new HttpRequest(in);
 
@@ -49,7 +52,7 @@ public class HttpSocketHandler implements Runnable {
                 }
 
                 HttpResponse response;
-                System.out.println("Received " + request.method + " request to path " + request.path);
+                LOGGER.info("Received " + request.method + " request to path " + request.path);
 
                 if (pathsMap.containsKey(request.path)) {
                     response = new HttpResponse(200, "OK", out);
@@ -60,7 +63,7 @@ public class HttpSocketHandler implements Runnable {
                 response.send(done);
             }
         } catch (IOException e) {
-            System.out.println("Something went wrong: " + e);
+            LOGGER.error("Something went wrong: " + e);
         } finally {
             try {
                 if (in != null) {
@@ -73,7 +76,7 @@ public class HttpSocketHandler implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                System.out.println("Connection has been closed");
+                LOGGER.info("Connection has been closed");
             }
         }
     }

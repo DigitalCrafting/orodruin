@@ -4,7 +4,7 @@ import org.digitalcrafting.anvil.server.BasicHttpServer;
 
 public class TestingServerApplication {
     public static void main(String[] args) {
-        new BasicHttpServer(8080)
+        new BasicHttpServer()
                 .addHandler("/api/", new TestHandler())
                 .start();
     }
